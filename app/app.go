@@ -106,6 +106,9 @@ import (
 	relaychainmodule "relay-chain/x/relaychain"
 	relaychainmodulekeeper "relay-chain/x/relaychain/keeper"
 	relaychainmoduletypes "relay-chain/x/relaychain/types"
+	topicmodule "relay-chain/x/topic"
+	topicmodulekeeper "relay-chain/x/topic/keeper"
+	topicmoduletypes "relay-chain/x/topic/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "relay-chain/app/params"
@@ -165,6 +168,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		relaychainmodule.AppModuleBasic{},
+		topicmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -238,7 +242,9 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
-	RelaychainKeeper relaychainmodulekeeper.Keeper
+	RelaychainKeeper  relaychainmodulekeeper.Keeper
+	ScopedTopicKeeper capabilitykeeper.ScopedKeeper
+	TopicKeeper       topicmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -284,6 +290,7 @@ func New(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
 		relaychainmoduletypes.StoreKey,
+		topicmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -503,6 +510,20 @@ func New(
 	)
 	relaychainModule := relaychainmodule.NewAppModule(appCodec, app.RelaychainKeeper, app.AccountKeeper, app.BankKeeper)
 
+	scopedTopicKeeper := app.CapabilityKeeper.ScopeToModule(topicmoduletypes.ModuleName)
+	app.ScopedTopicKeeper = scopedTopicKeeper
+	app.TopicKeeper = *topicmodulekeeper.NewKeeper(
+		appCodec,
+		keys[topicmoduletypes.StoreKey],
+		keys[topicmoduletypes.MemStoreKey],
+		app.GetSubspace(topicmoduletypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedTopicKeeper,
+	)
+	topicModule := topicmodule.NewAppModule(appCodec, app.TopicKeeper, app.AccountKeeper, app.BankKeeper)
+
+	topicIBCModule := topicmodule.NewIBCModule(app.TopicKeeper)
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -514,6 +535,7 @@ func New(
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
 		AddRoute(ibctransfertypes.ModuleName, transferIBCModule)
+	ibcRouter.AddRoute(topicmoduletypes.ModuleName, topicIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -569,6 +591,7 @@ func New(
 		transferModule,
 		icaModule,
 		relaychainModule,
+		topicModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -599,6 +622,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		relaychainmoduletypes.ModuleName,
+		topicmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -624,6 +648,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		relaychainmoduletypes.ModuleName,
+		topicmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -654,6 +679,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		relaychainmoduletypes.ModuleName,
+		topicmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -684,6 +710,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		relaychainModule,
+		topicModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -889,6 +916,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(relaychainmoduletypes.ModuleName)
+	paramsKeeper.Subspace(topicmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

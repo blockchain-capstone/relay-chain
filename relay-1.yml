@@ -1,0 +1,28 @@
+version: 1
+build:
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: kohav
+  coins:
+  - 1000token
+  - 100000000stake
+- name: darshan
+  coins:
+  - 500token
+  - 100000000stake
+faucet:
+  name: darshan
+  coins:
+  - 5token
+  - 100000stake
+  host: 0.0.0.0:4500
+genesis:
+  chain_id: relay-1
+validators:
+- name: kohav
+  bonded: 100000000stake
+  home: $HOME/.relay-1

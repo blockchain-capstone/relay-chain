@@ -1,0 +1,41 @@
+version: 1
+build:
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: phaneesh
+  coins:
+  - 1000token
+  - 1000000000stake
+- name: anirudh
+  coins:
+  - 500token
+  - 100000000stake
+faucet:
+  name: anirudh
+  coins:
+  - 5token
+  - 100000stake
+  host: :4501
+genesis:
+  chain_id: relay-2
+validators:
+- name: phaneesh
+  bonded: 100000000stake
+  app:
+    api:
+      address: :1318
+    grpc:
+      address: :9092
+    grpc-web:
+      address: :9093
+  config:
+    p2p:
+      laddr: :26658
+    rpc:
+      laddr: :26659
+      pprof_laddr: :6061
+  home: $HOME/.relay-2
