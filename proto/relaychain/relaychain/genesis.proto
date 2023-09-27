@@ -1,0 +1,12 @@
+syntax = "proto3";
+package relaychain.relaychain;
+
+import "gogoproto/gogo.proto";
+import "relaychain/relaychain/params.proto";
+
+option go_package = "relay-chain/x/relaychain/types";
+
+// GenesisState defines the relaychain module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
