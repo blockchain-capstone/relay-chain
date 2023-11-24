@@ -1,0 +1,41 @@
+version: 1
+build:
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: bing
+  coins:
+  - 1000token
+  - 1000000000stake
+- name: bang
+  coins:
+  - 500token
+  - 100000000stake
+faucet:
+  name: bang
+  coins:
+  - 5token
+  - 100000stake
+  host: :4509
+genesis:
+  chain_id: relay-10
+validators:
+- name: bing
+  bonded: 100000000stake
+  app:
+    api:
+      address: :1326
+    grpc:
+      address: :9113
+    grpc-web:
+      address: :9114
+  config:
+    p2p:
+      laddr: :26674
+    rpc:
+      laddr: :26675
+      pprof_laddr: :6069
+  home: $HOME/.relay-10

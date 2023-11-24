@@ -1,0 +1,41 @@
+version: 1
+build:
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: xian
+  coins:
+  - 1000token
+  - 1000000000stake
+- name: xuan
+  coins:
+  - 500token
+  - 100000000stake
+faucet:
+  name: xuan
+  coins:
+  - 5token
+  - 100000stake
+  host: :4504
+genesis:
+  chain_id: relay-5
+validators:
+- name: xian
+  bonded: 100000000stake
+  app:
+    api:
+      address: :1321
+    grpc:
+      address: :9098
+    grpc-web:
+      address: :9099
+  config:
+    p2p:
+      laddr: :26664
+    rpc:
+      laddr: :26665
+      pprof_laddr: :6064
+  home: $HOME/.relay-5

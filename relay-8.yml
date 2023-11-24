@@ -1,0 +1,41 @@
+version: 1
+build:
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: mian
+  coins:
+  - 1000token
+  - 1000000000stake
+- name: muan
+  coins:
+  - 500token
+  - 100000000stake
+faucet:
+  name: muan
+  coins:
+  - 5token
+  - 100000stake
+  host: :4507
+genesis:
+  chain_id: relay-8
+validators:
+- name: mian
+  bonded: 100000000stake
+  app:
+    api:
+      address: :1324
+    grpc:
+      address: :9109
+    grpc-web:
+      address: :9110
+  config:
+    p2p:
+      laddr: :26670
+    rpc:
+      laddr: :26671
+      pprof_laddr: :6067
+  home: $HOME/.relay-8

@@ -1,0 +1,41 @@
+version: 1
+build:
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: fing
+  coins:
+  - 1000token
+  - 1000000000stake
+- name: fang
+  coins:
+  - 500token
+  - 100000000stake
+faucet:
+  name: fang
+  coins:
+  - 5token
+  - 100000stake
+  host: :4505
+genesis:
+  chain_id: relay-6
+validators:
+- name: fing
+  bonded: 100000000stake
+  app:
+    api:
+      address: :1322
+    grpc:
+      address: :9105
+    grpc-web:
+      address: :9106
+  config:
+    p2p:
+      laddr: :26666
+    rpc:
+      laddr: :26667
+      pprof_laddr: :6065
+  home: $HOME/.relay-6
