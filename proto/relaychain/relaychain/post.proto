@@ -1,0 +1,9 @@
+syntax = "proto3";
+package relaychain.relaychain;
+
+option go_package = "relay-chain/x/relaychain/types";
+
+message Post {
+  uint64 id = 1;
+  string creator = 2;
+}
