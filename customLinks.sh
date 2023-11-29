@@ -37,7 +37,7 @@ then
 	else
 		echo $((value+1)) > ~/Desktop/capstone/chainCounter
 	fi
-	ignite chain serve -c $2.yml
+	ignite chain serve -c $2.yml && value=`cat ~/Desktop/capstone/chainCounter` && echo $((value-1)) > ~/Desktop/capstone/chainCounter
 elif [ "$command" = "relayer-remove" ];
 then
 	rm -rf ~/.ignite/relayer
@@ -71,7 +71,7 @@ elif [ "$command" = "ibc-configure" ];
 		init_rpc=26657
 		init_faucet=4500
 		value=`cat ~/Desktop/capstone/chainCounter`
-		if [ $value > 9 ] && [ $value < 99 ];
+		if [ $value -gt 9 ] && [ $value -lt 100 ];
 		then
 			rel_conf $init_rpc $init_faucet $((init_rpc + value/2*2)) $((init_faucet + value/2))
 
