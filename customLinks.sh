@@ -58,7 +58,7 @@ then
 	relay-chaind q topic list-sent-post --node tcp://localhost:$2
 elif [ "$command" = "send-timedout-message" ];
 then
-	relay-chaind tx topic send-ibc-post topic channel-$7 $2 $3 --from $4 --chain-id $5 --home ~/.$5 --packet-timeout-timestamp $6 --node tcp://localhost:$7
+	relay-chaind tx topic send-ibc-post topic channel-$8 $2 $3 --from $4 --chain-id $5 --home ~/.$5 --packet-timeout-timestamp $6 --node tcp://localhost:$7
 elif [ "$command" = "timedout-list" ];
 then
 	relay-chaind q topic list-timedout-post --node tcp://localhost:$2
